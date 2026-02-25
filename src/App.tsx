@@ -1,12 +1,8 @@
-import ButttonUsage from "./Button";
 import "./App.css";
-
-function App() {
-  return (
-    <>
-      Hello <ButttonUsage />
-    </>
-  );
-}
+import { RouterProvider } from "react-router-dom";
+import router from "./routes/router";
+const App = () => {
+  return <RouterProvider router={router} />;
+};
 
 export default App;
