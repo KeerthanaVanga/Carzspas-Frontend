@@ -2,7 +2,7 @@ import { Box, GridLegacy as Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import SignInForm from "../components/auth/SignInForm";
 import SignUpForm from "../components/auth/SignUpForm";
-import Logo from "../../public/carzspas.png"; // adjust path
+import Logo from "../assets/carzspas.png"; // adjust path
 
 const AuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -15,7 +15,7 @@ const AuthPage = () => {
         xs={12}
         md={6}
         sx={{
-          background: "linear-gradient(135deg, #000000, #1A1A1A)",
+          background: "background.paper",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -51,11 +51,22 @@ const AuthPage = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          p: 5,
-          backgroundColor: "background.paper",
+          p: 3,
+          background: "background.paper",
         }}
       >
-        <Box sx={{ width: "100%", maxWidth: 400 }}>
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 420,
+            p: 3,
+            borderRadius: 3,
+            background: "background.paper",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(212,175,55,0.2)",
+            boxShadow: "0 0 40px rgba(212,175,55,0.08)",
+          }}
+        >
           {isSignUp ? (
             <SignUpForm onSwitch={() => setIsSignUp(false)} />
           ) : (

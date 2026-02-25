@@ -1,7 +1,11 @@
-import { Button, Typography, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
+import PersonIcon from "@mui/icons-material/Person";
 import AuthTextField from "./AuthTextField";
+import AuthLoadingButton from "./AuthLoadingButton";
 
 interface Props {
   onSwitch: () => void;
@@ -32,32 +36,42 @@ const SignUpForm = ({ onSwitch }: Props) => {
         console.log("Sign Up:", values);
       }}
     >
-      {() => (
+      {({ isValid, dirty, isSubmitting }) => (
         <Form>
           <Typography variant="h4" mb={2}>
             Create Account
           </Typography>
 
-          <AuthTextField name="name" label="Full Name" />
-          <AuthTextField name="email" label="Email" type="email" />
-          <AuthTextField name="password" label="Password" type="password" />
+          <AuthTextField
+            name="name"
+            label="Full Name"
+            startIcon={<PersonIcon sx={{ color: "#D4AF37" }} />}
+          />
+          <AuthTextField
+            name="email"
+            label="Email"
+            type="email"
+            startIcon={<EmailIcon sx={{ color: "#D4AF37" }} />}
+          />
+          <AuthTextField
+            name="password"
+            label="Password"
+            type="password"
+            startIcon={<LockIcon sx={{ color: "#D4AF37" }} />}
+          />
           <AuthTextField
             name="confirmPassword"
             label="Confirm Password"
             type="password"
+            startIcon={<LockIcon sx={{ color: "#D4AF37" }} />}
           />
 
-          <Button
-            fullWidth
-            type="submit"
-            variant="contained"
-            sx={{
-              mt: 2,
-              background: "linear-gradient(45deg, #D4AF37, #F5D76E)",
-            }}
+          <AuthLoadingButton
+            loading={isSubmitting}
+            disabled={!dirty || !isValid || isSubmitting}
           >
             Sign Up
-          </Button>
+          </AuthLoadingButton>
 
           <Box mt={2}>
             <Typography variant="body2">

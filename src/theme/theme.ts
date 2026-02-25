@@ -1,10 +1,14 @@
 import { createTheme } from "@mui/material/styles";
 
 export const theme = createTheme({
+  typography: {
+    fontFamily: "Roboto, sans-serif",
+  },
+
   palette: {
     mode: "dark",
     primary: {
-      main: "#D4AF37", // Gold
+      main: "#D4AF37",
     },
     secondary: {
       main: "#F5D76E",
@@ -14,14 +18,16 @@ export const theme = createTheme({
       paper: "#1A1A1A",
     },
   },
-  typography: {
-    fontFamily: "'Poppins', sans-serif",
-    h3: {
-      fontWeight: 700,
-      letterSpacing: 1,
-    },
-  },
+
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          fontFamily: "Roboto, sans-serif",
+        },
+      },
+    },
+
     MuiButton: {
       styleOverrides: {
         root: {
@@ -31,6 +37,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiTextField: {
       styleOverrides: {
         root: {
