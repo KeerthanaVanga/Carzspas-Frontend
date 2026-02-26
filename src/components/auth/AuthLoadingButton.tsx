@@ -17,7 +17,7 @@ const AuthLoadingButton = ({ children, loading, disabled, sx }: Props) => {
       disabled={disabled || loading}
       sx={{
         mt: 3,
-        height: 60,
+        height: 50,
         borderRadius: 4,
         fontWeight: 700,
         fontSize: 18,

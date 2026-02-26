@@ -1,8 +1,9 @@
-import { Box, GridLegacy as Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { useState } from "react";
 import SignInForm from "../components/auth/SignInForm";
 import SignUpForm from "../components/auth/SignUpForm";
-import Logo from "../assets/carzspas.png"; // adjust path
+import Logo from "../assets/carzspas.png";
 
 const AuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -11,9 +12,7 @@ const AuthPage = () => {
     <Grid container sx={{ minHeight: "100vh" }}>
       {/* LEFT SIDE */}
       <Grid
-        item
-        xs={12}
-        md={6}
+        size={{ xs: 12, md: 6 }}
         sx={{
           background: "background.paper",
           display: "flex",
@@ -44,9 +43,7 @@ const AuthPage = () => {
 
       {/* RIGHT SIDE */}
       <Grid
-        item
-        xs={12}
-        md={6}
+        size={{ xs: 12, md: 6 }}
         sx={{
           display: "flex",
           justifyContent: "center",
