@@ -9,8 +9,8 @@ const DashboardPage = lazy(() => import("../pages/DashboardPage"));
 const TodayBookings = lazy(() => import("../pages/TodayBookings"));
 const CompletedBookings = lazy(() => import("../pages/CompletedBookings"));
 const Users = lazy(() => import("../pages/Users"));
-const CampaignLeads = lazy(() => import("../pages/CampaignLeads"));
-const Bookings = lazy(() => import("../pages/Bookings"));
+const CampaignLeads = lazy(() => import("../pages/CampaignLeadsPage"));
+const Bookings = lazy(() => import("../pages/BookingsPage"));
 const Services = lazy(() => import("../pages/Services"));
 const WhatsappBot = lazy(() => import("../pages/WhatsappBot"));
 
