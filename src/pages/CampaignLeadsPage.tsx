@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import CampaignLeadsTable from "../components/campaign-leads/CampaignLeadsTable";
 import CampaignLeadsFilters from "../components/campaign-leads/CampaignLeadsFilters";
 import type { CampaignLead } from "../types/campaign-leads-types";
+import dayjs, { Dayjs } from "dayjs";
 
 export default function CampaignLeadsPage() {
   const [leads, setLeads] = useState<CampaignLead[]>([]);
@@ -11,8 +12,6 @@ export default function CampaignLeadsPage() {
   const [campaign, setCampaign] = useState("");
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
 
   useEffect(() => {
     setTimeout(() => {
@@ -35,7 +34,7 @@ export default function CampaignLeadsPage() {
           updated_at: new Date().toISOString(),
         },
         {
-          id: 1,
+          id: 2,
           campaign_name: "Ceramic Offer",
           name: "Ravi Kumar",
           phone_number: "9876543210",
@@ -52,7 +51,7 @@ export default function CampaignLeadsPage() {
           updated_at: new Date().toISOString(),
         },
         {
-          id: 1,
+          id: 3,
           campaign_name: "Ceramic Offer",
           name: "Ravi Kumar",
           phone_number: "9876543210",
@@ -72,10 +71,13 @@ export default function CampaignLeadsPage() {
       setLoading(false);
     }, 1200);
   }, []);
-
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
+    null,
+    null,
+  ]);
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
-      const created = new Date(lead.created_at);
+      const created = dayjs(lead.created_at);
 
       const matchesCampaign =
         campaign === "" || lead.campaign_name === campaign;
@@ -86,19 +88,15 @@ export default function CampaignLeadsPage() {
         lead.name.toLowerCase().includes(search.toLowerCase()) ||
         lead.phone_number.includes(search);
 
-      const matchesFrom = !fromDate || created >= new Date(fromDate);
+      const matchesDate =
+        !dateRange[0] ||
+        !dateRange[1] ||
+        (created.isAfter(dateRange[0].startOf("day")) &&
+          created.isBefore(dateRange[1].endOf("day")));
 
-      const matchesTo = !toDate || created <= new Date(toDate + "T23:59:59");
-
-      return (
-        matchesCampaign &&
-        matchesStatus &&
-        matchesSearch &&
-        matchesFrom &&
-        matchesTo
-      );
+      return matchesCampaign && matchesStatus && matchesSearch && matchesDate;
     });
-  }, [leads, campaign, status, search, fromDate, toDate]);
+  }, [leads, campaign, status, search, dateRange]);
 
   const campaignsList = [...new Set(leads.map((l) => l.campaign_name))];
 
@@ -112,15 +110,24 @@ export default function CampaignLeadsPage() {
         campaign={campaign}
         status={status}
         search={search}
-        fromDate={fromDate}
-        toDate={toDate}
+        dateRange={dateRange}
         campaigns={campaignsList}
         onChange={(field, value) => {
-          if (field === "campaign") setCampaign(value);
-          if (field === "status") setStatus(value);
-          if (field === "search") setSearch(value);
-          if (field === "fromDate") setFromDate(value);
-          if (field === "toDate") setToDate(value);
+          if (field === "campaign" && typeof value === "string") {
+            setCampaign(value);
+          }
+
+          if (field === "status" && typeof value === "string") {
+            setStatus(value);
+          }
+
+          if (field === "search" && typeof value === "string") {
+            setSearch(value);
+          }
+
+          if (field === "dateRange" && Array.isArray(value)) {
+            setDateRange(value);
+          }
         }}
       />
 

@@ -1,29 +1,34 @@
 import { Box, TextField, MenuItem, Grid } from "@mui/material";
+import { LocalizationProvider, DateRangePicker } from "@mui/x-date-pickers-pro";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import type { Dayjs } from "dayjs";
+
+type FilterField = "campaign" | "status" | "search" | "dateRange";
+
+type FilterValue = string | [Dayjs | null, Dayjs | null];
 
 interface Props {
   campaign: string;
   status: string;
   search: string;
-  fromDate: string;
-  toDate: string;
+  dateRange: [Dayjs | null, Dayjs | null];
   campaigns: string[];
-  onChange: (field: string, value: string) => void;
+  onChange: (field: FilterField, value: FilterValue) => void;
 }
 
 export default function CampaignLeadsFilters({
   campaign,
   status,
   search,
-  fromDate,
-  toDate,
+  dateRange,
   campaigns,
   onChange,
 }: Props) {
   return (
     <Box mb={4}>
-      <Grid container spacing={3}>
+      <Grid container spacing={2} alignItems="center">
         {/* Campaign */}
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 2.4 }}>
           <TextField
             fullWidth
             select
@@ -41,7 +46,7 @@ export default function CampaignLeadsFilters({
         </Grid>
 
         {/* Status */}
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 2.4 }}>
           <TextField
             fullWidth
             select
@@ -56,32 +61,34 @@ export default function CampaignLeadsFilters({
           </TextField>
         </Grid>
 
-        {/* From Date */}
-        <Grid size={{ xs: 12, md: 3 }}>
-          <TextField
-            fullWidth
-            type="date"
-            label="From Date"
-            InputLabelProps={{ shrink: true }}
-            value={fromDate}
-            onChange={(e) => onChange("fromDate", e.target.value)}
-          />
-        </Grid>
-
-        {/* To Date */}
-        <Grid size={{ xs: 12, md: 3 }}>
-          <TextField
-            fullWidth
-            type="date"
-            label="To Date"
-            InputLabelProps={{ shrink: true }}
-            value={toDate}
-            onChange={(e) => onChange("toDate", e.target.value)}
-          />
+        {/* Date Range */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateRangePicker
+              value={dateRange}
+              onChange={(newValue) => onChange("dateRange", newValue)}
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "rgba(212,175,55,0.3)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "primary.main",
+                  },
+                },
+              }}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                },
+              }}
+            />
+          </LocalizationProvider>
         </Grid>
 
         {/* Search */}
-        <Grid size={{ xs: 12 }}>
+        <Grid size={{ xs: 12, md: 3.2 }}>
           <TextField
             fullWidth
             label="Search Name / Phone"
