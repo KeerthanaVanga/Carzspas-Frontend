@@ -4,6 +4,8 @@ interface Props {
   campaign: string;
   status: string;
   search: string;
+  fromDate: string;
+  toDate: string;
   campaigns: string[];
   onChange: (field: string, value: string) => void;
 }
@@ -12,14 +14,16 @@ export default function CampaignLeadsFilters({
   campaign,
   status,
   search,
+  fromDate,
+  toDate,
   campaigns,
   onChange,
 }: Props) {
   return (
     <Box mb={4}>
       <Grid container spacing={3}>
-        {/* Campaign Filter */}
-        <Grid size={{ xs: 12, md: 4 }}>
+        {/* Campaign */}
+        <Grid size={{ xs: 12, md: 3 }}>
           <TextField
             fullWidth
             select
@@ -36,8 +40,8 @@ export default function CampaignLeadsFilters({
           </TextField>
         </Grid>
 
-        {/* Status Filter */}
-        <Grid size={{ xs: 12, md: 4 }}>
+        {/* Status */}
+        <Grid size={{ xs: 12, md: 3 }}>
           <TextField
             fullWidth
             select
@@ -52,8 +56,32 @@ export default function CampaignLeadsFilters({
           </TextField>
         </Grid>
 
-        {/* Search Field */}
-        <Grid size={{ xs: 12, md: 4 }}>
+        {/* From Date */}
+        <Grid size={{ xs: 12, md: 3 }}>
+          <TextField
+            fullWidth
+            type="date"
+            label="From Date"
+            InputLabelProps={{ shrink: true }}
+            value={fromDate}
+            onChange={(e) => onChange("fromDate", e.target.value)}
+          />
+        </Grid>
+
+        {/* To Date */}
+        <Grid size={{ xs: 12, md: 3 }}>
+          <TextField
+            fullWidth
+            type="date"
+            label="To Date"
+            InputLabelProps={{ shrink: true }}
+            value={toDate}
+            onChange={(e) => onChange("toDate", e.target.value)}
+          />
+        </Grid>
+
+        {/* Search */}
+        <Grid size={{ xs: 12 }}>
           <TextField
             fullWidth
             label="Search Name / Phone"

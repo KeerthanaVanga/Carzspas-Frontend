@@ -11,6 +11,8 @@ export default function CampaignLeadsPage() {
   const [campaign, setCampaign] = useState("");
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   useEffect(() => {
     setTimeout(() => {
@@ -73,16 +75,30 @@ export default function CampaignLeadsPage() {
 
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
+      const created = new Date(lead.created_at);
+
       const matchesCampaign =
         campaign === "" || lead.campaign_name === campaign;
+
       const matchesStatus = status === "" || lead.lead_status === status;
+
       const matchesSearch =
         lead.name.toLowerCase().includes(search.toLowerCase()) ||
         lead.phone_number.includes(search);
 
-      return matchesCampaign && matchesStatus && matchesSearch;
+      const matchesFrom = !fromDate || created >= new Date(fromDate);
+
+      const matchesTo = !toDate || created <= new Date(toDate + "T23:59:59");
+
+      return (
+        matchesCampaign &&
+        matchesStatus &&
+        matchesSearch &&
+        matchesFrom &&
+        matchesTo
+      );
     });
-  }, [leads, campaign, status, search]);
+  }, [leads, campaign, status, search, fromDate, toDate]);
 
   const campaignsList = [...new Set(leads.map((l) => l.campaign_name))];
 
@@ -96,11 +112,15 @@ export default function CampaignLeadsPage() {
         campaign={campaign}
         status={status}
         search={search}
+        fromDate={fromDate}
+        toDate={toDate}
         campaigns={campaignsList}
         onChange={(field, value) => {
           if (field === "campaign") setCampaign(value);
           if (field === "status") setStatus(value);
           if (field === "search") setSearch(value);
+          if (field === "fromDate") setFromDate(value);
+          if (field === "toDate") setToDate(value);
         }}
       />
 

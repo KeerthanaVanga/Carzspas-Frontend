@@ -10,6 +10,10 @@ import {
 } from "@mui/material";
 import type { CampaignLead } from "../../types/campaign-leads-types";
 import CampaignLeadsTableSkeleton from "./CampaignLeadsTableSkeleton";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PhoneIcon from "@mui/icons-material/Phone";
+import { IconButton } from "@mui/material";
+import { useState } from "react";
 
 interface Props {
   data: CampaignLead[];
@@ -25,14 +29,14 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
     "Brand",
     "Model",
     "Year",
-    "Preferred Date",
-    "Preferred Time",
+    "Preferred Slot",
     "Intent",
     "Status",
     "Notes",
     "Created",
+    "Contact",
   ];
-
+  const [contacted, setContacted] = useState<number[]>([]);
   const getStatusColor = (status?: string) => {
     switch (status) {
       case "Cold":
@@ -97,8 +101,9 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
                 <TableCell>{lead.car_brand}</TableCell>
                 <TableCell>{lead.car_model}</TableCell>
                 <TableCell>{lead.car_year}</TableCell>
-                <TableCell>{lead.preferred_date}</TableCell>
-                <TableCell>{lead.preferred_time}</TableCell>
+                <TableCell>
+                  {lead.preferred_date} | {lead.preferred_time}
+                </TableCell>
                 <TableCell>{lead.user_intent}</TableCell>
 
                 <TableCell>
@@ -117,6 +122,26 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
 
                 <TableCell>
                   {new Date(lead.created_at).toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    onClick={() =>
+                      setContacted((prev) =>
+                        prev.includes(lead.id) ? prev : [...prev, lead.id],
+                      )
+                    }
+                    sx={{
+                      color: contacted.includes(lead.id)
+                        ? "#16A34A"
+                        : "primary.main",
+                    }}
+                  >
+                    {contacted.includes(lead.id) ? (
+                      <CheckCircleIcon />
+                    ) : (
+                      <PhoneIcon />
+                    )}
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))

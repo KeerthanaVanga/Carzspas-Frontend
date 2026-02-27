@@ -16,13 +16,18 @@ export default function PrivateLayout() {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
           backgroundColor: "background.default",
           minHeight: "100vh",
           transition: "margin 0.3s ease",
         }}
       >
-        <Outlet />
+        {/* ✅ THIS FIX PUSHES CONTENT BELOW NAVBAR */}
+        <Box sx={(theme) => theme.mixins.toolbar} />
+
+        {/* Page Content */}
+        <Box sx={{ p: 3 }}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );

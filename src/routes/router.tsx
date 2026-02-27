@@ -8,11 +8,12 @@ const AuthPage = lazy(() => import("../pages/AuthPage"));
 const DashboardPage = lazy(() => import("../pages/DashboardPage"));
 const TodayBookings = lazy(() => import("../pages/TodayBookings"));
 const CompletedBookings = lazy(() => import("../pages/CompletedBookings"));
-const Users = lazy(() => import("../pages/Users"));
+const UsersPage = lazy(() => import("../pages/UsersPage"));
 const CampaignLeads = lazy(() => import("../pages/CampaignLeadsPage"));
 const Bookings = lazy(() => import("../pages/BookingsPage"));
-const Services = lazy(() => import("../pages/Services"));
-const WhatsappBot = lazy(() => import("../pages/WhatsappBot"));
+const ServicesPage = lazy(() => import("../pages/ServicesPage"));
+const ServicesFormPage = lazy(() => import("../pages/ServiceFormPage"));
+const WhatsappBot = lazy(() => import("../pages/WhatsappBotPage"));
 
 const router = createBrowserRouter([
   {
@@ -39,10 +40,12 @@ const router = createBrowserRouter([
           },
           { path: ROUTES.TODAY_BOOKINGS, element: <TodayBookings /> },
           { path: ROUTES.COMPLETED_BOOKINGS, element: <CompletedBookings /> },
-          { path: ROUTES.USERS, element: <Users /> },
+          { path: ROUTES.USERS, element: <UsersPage /> },
           { path: ROUTES.CAMPAIGN_LEADS, element: <CampaignLeads /> },
           { path: ROUTES.BOOKINGS, element: <Bookings /> },
-          { path: ROUTES.SERVICES, element: <Services /> },
+          { path: ROUTES.SERVICES, element: <ServicesPage /> },
+          { path: ROUTES.SERVICESFORM, element: <ServicesFormPage /> },
+
           { path: ROUTES.CHATBOT, element: <WhatsappBot /> },
         ],
       },

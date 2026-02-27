@@ -8,5 +8,6 @@ export const ROUTES = {
   CAMPAIGN_LEADS: "/campaign-leads",
   BOOKINGS: "/bookings",
   SERVICES: "/services",
+  SERVICESFORM: "/services/edit/:id?",
   CHATBOT: "/chatbot",
 } as const;
