@@ -10,13 +10,15 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useState } from "react";
 import MessageBubble from "./MessageBubble";
 import type { ChatUser, Message } from "../../types/whatsapp.types";
+import ChatWindowSkeleton from "./ChatWindowSkeleton";
 
 interface Props {
   user: ChatUser | null;
-  onBack: () => void;
+  onBack?: () => void;
+  loading?: boolean;
 }
 
-export default function ChatWindow({ user, onBack }: Props) {
+export default function ChatWindow({ user, onBack, loading = false }: Props) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -44,6 +46,18 @@ export default function ChatWindow({ user, onBack }: Props) {
     );
   }
 
+  if (!user) {
+    return (
+      <Box flex={1} display="flex" alignItems="center" justifyContent="center">
+        <Typography color="primary.main">
+          Select a chat to start messaging
+        </Typography>
+      </Box>
+    );
+  }
+  if (loading && user) {
+    return <ChatWindowSkeleton />;
+  }
   const sendMessage = () => {
     if (!input.trim()) return;
 

@@ -8,10 +8,12 @@ import {
   Badge,
 } from "@mui/material";
 import type { ChatUser } from "../../types/whatsapp.types";
+import ChatSidebarSkeleton from "./ChatSidebarSkeleton";
 
 interface Props {
   selectedUser: ChatUser | null;
   onSelectUser: (user: ChatUser) => void;
+  loading?: boolean;
 }
 
 const dummyUsers: ChatUser[] = [
@@ -20,7 +22,15 @@ const dummyUsers: ChatUser[] = [
   { id: 3, name: "Advocate Ahmed", lastMessage: "Price details?", unread: 1 },
 ];
 
-export default function ChatSidebar({ selectedUser, onSelectUser }: Props) {
+export default function ChatSidebar({
+  selectedUser,
+  onSelectUser,
+  loading = false,
+}: Props) {
+  if (loading) {
+    return <ChatSidebarSkeleton />;
+  }
+
   return (
     <Box
       sx={{
@@ -42,12 +52,12 @@ export default function ChatSidebar({ selectedUser, onSelectUser }: Props) {
           <ListItemButton
             key={user.id}
             selected={selectedUser?.id === user.id}
+            onClick={() => onSelectUser(user)}
             sx={{
               "&.Mui-selected": {
                 backgroundColor: "rgba(212,175,55,0.1)",
               },
             }}
-            onClick={() => onSelectUser(user)}
           >
             <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
               {user.name[0]}

@@ -2,6 +2,9 @@ import { Box, TextField, MenuItem, Grid } from "@mui/material";
 import { LocalizationProvider, DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import type { PickersShortcutsItem } from "@mui/x-date-pickers/PickersShortcuts";
+import type { DateRange } from "@mui/x-date-pickers-pro/models";
 
 type FilterField = "campaign" | "status" | "search" | "dateRange";
 
@@ -15,6 +18,39 @@ interface Props {
   campaigns: string[];
   onChange: (field: FilterField, value: FilterValue) => void;
 }
+
+const shortcutsItems: PickersShortcutsItem<DateRange<Dayjs>>[] = [
+  {
+    label: "This Week",
+    getValue: () => {
+      const today = dayjs();
+      return [today.startOf("week"), today.endOf("week")];
+    },
+  },
+  {
+    label: "Last Week",
+    getValue: () => {
+      const today = dayjs();
+      const prevWeek = today.subtract(7, "day");
+      return [prevWeek.startOf("week"), prevWeek.endOf("week")];
+    },
+  },
+  {
+    label: "Last 7 Days",
+    getValue: () => {
+      const today = dayjs();
+      return [today.subtract(7, "day"), today];
+    },
+  },
+  {
+    label: "Current Month",
+    getValue: () => {
+      const today = dayjs();
+      return [today.startOf("month"), today.endOf("month")];
+    },
+  },
+  { label: "Reset", getValue: () => [null, null] },
+];
 
 export default function CampaignLeadsFilters({
   campaign,
@@ -67,6 +103,7 @@ export default function CampaignLeadsFilters({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateRangePicker
               value={dateRange}
+              disableFuture
               onChange={(newValue) => onChange("dateRange", newValue)}
               sx={{
                 width: "100%",
@@ -83,6 +120,10 @@ export default function CampaignLeadsFilters({
                 textField: {
                   fullWidth: true,
                 },
+                shortcuts: {
+                  items: shortcutsItems,
+                },
+                actionBar: { actions: [] },
               }}
             />
           </LocalizationProvider>

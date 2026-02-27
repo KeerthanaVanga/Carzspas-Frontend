@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import UsersTable from "../components/users/UsersTable";
 import type { UserBooking } from "../types/user.types";
-import UsersFilters from "../components/users/Usersfilters";
+import UsersFilters from "../components/users/UsersFilters";
 import dayjs, { Dayjs } from "dayjs";
 import { useMemo } from "react";
 
@@ -62,32 +62,17 @@ export default function UsersPage() {
   }, [users, statusFilter, dateRange]);
 
   return (
-    <Box sx={{ px: { xs: 2, md: 3 }, pt: 2 }}>
-      <Box
-        mb={4}
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "flex-start", md: "center" },
-          justifyContent: "space-between",
-          gap: 2,
-        }}
-      >
-        {/* Heading */}
-        <Typography variant="h4" fontWeight={700} color="primary.main">
-          Users
-        </Typography>
+    <Box>
+      <Typography variant="h4" fontWeight={600} mb={3}>
+        Users
+      </Typography>
 
-        {/* Filters */}
-        <Box sx={{ width: { xs: "100%", md: "auto" } }}>
-          <UsersFilters
-            status={statusFilter}
-            dateRange={dateRange}
-            onStatusChange={setStatusFilter}
-            onDateChange={setDateRange}
-          />
-        </Box>
-      </Box>
+      <UsersFilters
+        status={statusFilter}
+        dateRange={dateRange}
+        onStatusChange={setStatusFilter}
+        onDateChange={setDateRange}
+      />
 
       <UsersTable data={filteredUsers} loading={loading} />
     </Box>

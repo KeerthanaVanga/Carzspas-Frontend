@@ -10,7 +10,6 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { useState, useEffect } from "react";
 import ChatSidebar from "./ChatSidebar";
 import ChatWindow from "./ChatWindow";
-import ChatSkeleton from "./ChatSkeleton";
 import type { ChatUser } from "../../types/whatsapp.types";
 
 export default function ChatLayout() {
@@ -29,23 +28,25 @@ export default function ChatLayout() {
     console.log("Download leads clicked");
   };
 
-  if (loading) return <ChatSkeleton />;
-
   return (
-    <Box sx={{ px: { xs: 2, md: 3 }, pt: 2 }}>
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        justifyContent="space-between"
-        alignItems={{ xs: "flex-start", md: "center" }}
+    <Box>
+      {/* PAGE HEADER */}
+      <Box
         mb={3}
-        gap={2}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: { xs: "flex-start", md: "center" },
+          flexDirection: { xs: "column", md: "row" },
+          gap: 2,
+        }}
       >
-        {/* LEFT SIDE */}
-        <Typography variant="h4" fontWeight={700} color="primary.main">
+        {/* LEFT */}
+        <Typography variant="h4" fontWeight={600}>
           WhatsApp Bot
         </Typography>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT */}
         <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap">
           {/* Today Leads */}
           <Box
@@ -87,17 +88,15 @@ export default function ChatLayout() {
           <Button
             variant="contained"
             startIcon={<DownloadIcon />}
-            sx={{
-              px: 3,
-              fontWeight: 600,
-            }}
+            sx={{ px: 3, fontWeight: 600 }}
             onClick={handleDownloadLeads}
           >
             Download Leads
           </Button>
         </Stack>
-      </Stack>
-      {/* 🔥 CHAT CONTAINER */}
+      </Box>
+
+      {/* CHAT CONTAINER */}
       <Box
         sx={{
           display: "flex",
@@ -112,6 +111,7 @@ export default function ChatLayout() {
           <ChatSidebar
             selectedUser={selectedUser}
             onSelectUser={setSelectedUser}
+            loading={loading}
           />
         )}
 
@@ -119,6 +119,7 @@ export default function ChatLayout() {
           <ChatWindow
             user={selectedUser}
             onBack={() => setSelectedUser(null)}
+            loading={loading}
           />
         )}
       </Box>

@@ -62,29 +62,18 @@ export default function BookingsPage() {
 
   return (
     <Box>
-      <Box
-        mb={3}
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: { xs: "flex-start", md: "center" },
-          flexDirection: { xs: "column", md: "row" },
-          gap: 2,
-        }}
-      >
-        <Typography variant="h5" fontWeight={600}>
-          Bookings
-        </Typography>
+      <Typography variant="h4" fontWeight={600} mb={3}>
+        Bookings
+      </Typography>
 
-        <BookingsFilters
-          status={filters.status}
-          search={filters.search}
-          dateRange={filters.dateRange}
-          onChange={(field, value) =>
-            setFilters((prev) => ({ ...prev, [field]: value }))
-          }
-        />
-      </Box>
+      <BookingsFilters
+        status={filters.status}
+        search={filters.search}
+        dateRange={filters.dateRange}
+        onChange={(field, value) =>
+          setFilters((prev) => ({ ...prev, [field]: value }))
+        }
+      />
 
       <BookingsTable data={filteredBookings} loading={loading} />
     </Box>

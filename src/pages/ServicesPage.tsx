@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Grid, Stack } from "@mui/material";
+import { Box, Typography, Button, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ServiceCard from "../components/services/ServiceCard";
@@ -66,26 +66,28 @@ We use high-quality vinyl wrap materials to ensure long-lasting results, providi
   }, []);
 
   return (
-    <Box sx={{ px: { xs: 2, md: 3 }, pt: 2 }}>
-      {/* 🔥 PAGE HEADER */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={4}
-        flexWrap="wrap"
-        gap={2}
+    <Box>
+      {/* PAGE HEADER */}
+      <Box
+        mb={3}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: { xs: "flex-start", md: "center" },
+          flexDirection: { xs: "column", md: "row" },
+          gap: 2,
+        }}
       >
-        <Typography variant="h4" fontWeight={700} color="primary.main">
+        <Typography variant="h4" fontWeight={600}>
           Services
         </Typography>
 
         <Button variant="contained" onClick={() => navigate("/services/new")}>
           Add Service
         </Button>
-      </Stack>
+      </Box>
 
-      {/* 🔥 CONTENT */}
+      {/* CONTENT */}
       {loading ? (
         <ServicesSkeleton />
       ) : (
