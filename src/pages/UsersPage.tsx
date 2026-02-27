@@ -62,32 +62,34 @@ export default function UsersPage() {
   }, [users, statusFilter, dateRange]);
 
   return (
-    <Box
-      mb={4}
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
-        alignItems: { xs: "flex-start", md: "center" },
-        justifyContent: "space-between",
-        gap: 2,
-      }}
-    >
-      {/* Heading */}
-      <Typography variant="h4" fontWeight={700} color="primary.main">
-        Users
-      </Typography>
+    <Box sx={{ px: { xs: 2, md: 3 }, pt: 2 }}>
+      <Box
+        mb={4}
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: { xs: "flex-start", md: "center" },
+          justifyContent: "space-between",
+          gap: 2,
+        }}
+      >
+        {/* Heading */}
+        <Typography variant="h4" fontWeight={700} color="primary.main">
+          Users
+        </Typography>
 
-      {/* Filters */}
-      <Box sx={{ width: { xs: "100%", md: "auto" } }}>
-        <UsersFilters
-          status={statusFilter}
-          dateRange={dateRange}
-          onStatusChange={setStatusFilter}
-          onDateChange={setDateRange}
-        />
-
-        <UsersTable data={filteredUsers} loading={loading} />
+        {/* Filters */}
+        <Box sx={{ width: { xs: "100%", md: "auto" } }}>
+          <UsersFilters
+            status={statusFilter}
+            dateRange={dateRange}
+            onStatusChange={setStatusFilter}
+            onDateChange={setDateRange}
+          />
+        </Box>
       </Box>
+
+      <UsersTable data={filteredUsers} loading={loading} />
     </Box>
   );
 }

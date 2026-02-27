@@ -1,39 +1,68 @@
-import { Grid, TextField, MenuItem, Box } from "@mui/material";
+import { Box, TextField, MenuItem } from "@mui/material";
+import { LocalizationProvider, DateRangePicker } from "@mui/x-date-pickers-pro";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import type { Dayjs } from "dayjs";
+
+type FilterField = "status" | "search" | "dateRange";
+
+type FilterValue = string | [Dayjs | null, Dayjs | null];
 
 interface Props {
   status: string;
   search: string;
-  onChange: (field: string, value: string) => void;
+  dateRange: [Dayjs | null, Dayjs | null];
+  onChange: (field: FilterField, value: FilterValue) => void;
 }
-
-export default function BookingsFilters({ status, search, onChange }: Props) {
+export default function BookingsFilters({
+  status,
+  search,
+  dateRange,
+  onChange,
+}: Props) {
   return (
-    <Box mb={4}>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <TextField
-            fullWidth
-            select
-            label="Booking Status"
-            value={status}
-            onChange={(e) => onChange("status", e.target.value)}
-          >
-            <MenuItem value="">All Status</MenuItem>
-            <MenuItem value="Confirm">Confirm</MenuItem>
-            <MenuItem value="Reschedule">Reschedule</MenuItem>
-            <MenuItem value="Cancel">Cancel</MenuItem>
-          </TextField>
-        </Grid>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 2,
+        flexWrap: "wrap",
+      }}
+    >
+      {/* Status */}
+      <TextField
+        select
+        size="small"
+        label="Status"
+        value={status}
+        onChange={(e) => onChange("status", e.target.value)}
+        sx={{ minWidth: 150 }}
+      >
+        <MenuItem value="">All</MenuItem>
+        <MenuItem value="Confirm">Confirm</MenuItem>
+        <MenuItem value="Reschedule">Reschedule</MenuItem>
+        <MenuItem value="Cancel">Cancel</MenuItem>
+      </TextField>
 
-        <Grid size={{ xs: 12, md: 4 }}>
-          <TextField
-            fullWidth
-            label="Search Name / Phone"
-            value={search}
-            onChange={(e) => onChange("search", e.target.value)}
-          />
-        </Grid>
-      </Grid>
+      {/* Search */}
+      <TextField
+        size="small"
+        label="Search Name / Phone"
+        value={search}
+        onChange={(e) => onChange("search", e.target.value)}
+        sx={{ minWidth: 220 }}
+      />
+
+      {/* Date Range */}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateRangePicker
+          value={dateRange}
+          onChange={(newValue) => onChange("dateRange", newValue)}
+          slotProps={{
+            textField: { size: "small" },
+          }}
+          sx={{ minWidth: 250 }}
+        />
+      </LocalizationProvider>
     </Box>
   );
 }
