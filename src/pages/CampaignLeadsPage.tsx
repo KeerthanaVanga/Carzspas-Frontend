@@ -62,7 +62,7 @@ export default function CampaignLeadsPage() {
           preferred_date: "2026-02-27",
           preferred_time: "10:30 AM",
           user_intent: "Ceramic Coating",
-          lead_status: "Hot",
+          lead_status: "Contacted",
           notes: "Interested this weekend",
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

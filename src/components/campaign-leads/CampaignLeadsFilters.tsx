@@ -58,6 +58,7 @@ export default function CampaignLeadsFilters({
             <MenuItem value="Cold">Cold</MenuItem>
             <MenuItem value="Warm">Warm</MenuItem>
             <MenuItem value="Hot">Hot</MenuItem>
+            <MenuItem value="Contacted">Contacted</MenuItem>
           </TextField>
         </Grid>
 

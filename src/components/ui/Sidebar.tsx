@@ -15,7 +15,7 @@ import {
 import logo from "../../assets/carzspas.png";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { NavLink } from "react-router-dom";
-import { sideNavLinks, topNavLinks } from "../../config/MenuConfig";
+import { sideNavLinks } from "../../config/MenuConfig";
 import { drawerWidth, collapsedWidth } from "./drawerStyles";
 
 interface Props {
@@ -26,8 +26,6 @@ interface Props {
 export default function Sidebar({ open, toggleDrawer }: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  const menuItems = isMobile ? [...topNavLinks, ...sideNavLinks] : sideNavLinks;
 
   return (
     <MuiDrawer
@@ -82,7 +80,7 @@ export default function Sidebar({ open, toggleDrawer }: Props) {
       <Divider />
 
       <List>
-        {menuItems.map((item) => (
+        {sideNavLinks.map((item) => (
           <Tooltip
             key={item.label}
             title={!open && !isMobile ? item.label : ""}

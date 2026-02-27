@@ -1,7 +1,5 @@
 import {
   Dashboard as DashboardIcon,
-  Today as TodayIcon,
-  CheckCircle as CheckCircleIcon,
   People as PeopleIcon,
   Campaign as CampaignIcon,
   BookOnline as BookOnlineIcon,
@@ -10,17 +8,8 @@ import {
 } from "@mui/icons-material";
 import { ROUTES } from "../routes/path.route";
 
-export const topNavLinks = [
-  { label: "Dashboard", icon: DashboardIcon, path: ROUTES.DASHBOARD },
-  { label: "Today Bookings", icon: TodayIcon, path: ROUTES.TODAY_BOOKINGS },
-  {
-    label: "Completed",
-    icon: CheckCircleIcon,
-    path: ROUTES.COMPLETED_BOOKINGS,
-  },
-];
-
 export const sideNavLinks = [
+  { label: "Dashboard", icon: DashboardIcon, path: ROUTES.DASHBOARD },
   { label: "Users", icon: PeopleIcon, path: ROUTES.USERS },
   { label: "Campaign Leads", icon: CampaignIcon, path: ROUTES.CAMPAIGN_LEADS },
   { label: "Bookings", icon: BookOnlineIcon, path: ROUTES.BOOKINGS },

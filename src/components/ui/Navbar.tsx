@@ -11,11 +11,10 @@ import {
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import { topNavLinks } from "../../config/MenuConfig";
 import { drawerWidth, collapsedWidth } from "./drawerStyles";
 import logo from "../../assets/carzspas.png";
 import ProfileMenu from "./ProfileMenu";
-import { NavLink } from "react-router-dom";
+
 interface Props {
   open: boolean;
   toggleDrawer: () => void;
@@ -73,53 +72,6 @@ export default function Navbar({ open, toggleDrawer }: Props) {
 
         {/* 🔹 RIGHT SECTION */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {!isMobile &&
-            topNavLinks.map((item) => (
-              <Box
-                key={item.label}
-                component={NavLink}
-                to={item.path}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  px: 2,
-                  py: 1,
-                  borderRadius: 1,
-                  textDecoration: "none",
-                  color: "#fff",
-                  fontWeight: 500,
-                  transition: "all 0.2s ease",
-
-                  "&.active": {
-                    backgroundColor: "rgba(212,175,55,0.15)",
-                    color: "secondary.main",
-                    "& .MuiSvgIcon-root": {
-                      color: "secondary.main",
-                    },
-                  },
-
-                  "&:hover": {
-                    backgroundColor: "rgba(212,175,55,0.08)",
-                    color: "secondary.main",
-                    "& .MuiSvgIcon-root": {
-                      color: "secondary.main",
-                    },
-                  },
-                }}
-              >
-                <item.icon
-                  fontSize="small"
-                  sx={{
-                    color: "primary.main", // 👈 gold always
-                    transition: "color 0.2s ease",
-                  }}
-                />
-
-                <Typography sx={{ color: "inherit" }}>{item.label}</Typography>
-              </Box>
-            ))}
-
           {/* Avatar */}
           <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
             <Avatar sx={{ bgcolor: "primary.main", color: "#000" }}>K</Avatar>

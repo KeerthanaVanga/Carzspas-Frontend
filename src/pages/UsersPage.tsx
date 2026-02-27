@@ -1,11 +1,19 @@
-import { Box, Typography, Stack } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import UsersTable from "../components/users/UsersTable";
 import type { UserBooking } from "../types/user.types";
+import UsersFilters from "../components/users/Usersfilters";
+import dayjs, { Dayjs } from "dayjs";
+import { useMemo } from "react";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<UserBooking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
+    null,
+    null,
+  ]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -36,16 +44,50 @@ export default function UsersPage() {
       setLoading(false);
     }, 1500);
   }, []);
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      const created = dayjs(user.created_at);
+
+      const matchesStatus =
+        statusFilter === "" || user.booking_status === statusFilter;
+
+      const matchesDate =
+        !dateRange[0] ||
+        !dateRange[1] ||
+        (created.isAfter(dateRange[0].startOf("day")) &&
+          created.isBefore(dateRange[1].endOf("day")));
+
+      return matchesStatus && matchesDate;
+    });
+  }, [users, statusFilter, dateRange]);
 
   return (
-    <Box sx={{ px: { xs: 2, md: 3 }, pt: 2 }}>
-      <Stack mb={4}>
-        <Typography variant="h4" fontWeight={700} color="primary.main">
-          Users
-        </Typography>
-      </Stack>
+    <Box
+      mb={4}
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        alignItems: { xs: "flex-start", md: "center" },
+        justifyContent: "space-between",
+        gap: 2,
+      }}
+    >
+      {/* Heading */}
+      <Typography variant="h4" fontWeight={700} color="primary.main">
+        Users
+      </Typography>
 
-      <UsersTable data={users} loading={loading} />
+      {/* Filters */}
+      <Box sx={{ width: { xs: "100%", md: "auto" } }}>
+        <UsersFilters
+          status={statusFilter}
+          dateRange={dateRange}
+          onStatusChange={setStatusFilter}
+          onDateChange={setDateRange}
+        />
+
+        <UsersTable data={filteredUsers} loading={loading} />
+      </Box>
     </Box>
   );
 }
