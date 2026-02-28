@@ -30,7 +30,7 @@ export default function UsersFilters({
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="Confirmed">Confirmed</MenuItem>
-            <MenuItem value="Pending">Pending</MenuItem>
+            <MenuItem value="Rescheduled">Rescheduled</MenuItem>
             <MenuItem value="Cancelled">Cancelled</MenuItem>
             <MenuItem value="Completed">Completed</MenuItem>
           </TextField>
@@ -41,7 +41,6 @@ export default function UsersFilters({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateRangePicker
               value={dateRange}
-              disableFuture
               onChange={(newValue) => onDateChange(newValue)}
               sx={{
                 width: "100%",
