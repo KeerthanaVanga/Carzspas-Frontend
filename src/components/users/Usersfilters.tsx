@@ -12,12 +12,13 @@ export default function UsersFilters({ dateRange, onDateChange }: Props) {
   return (
     <Box mb={4}>
       <Grid container spacing={2} alignItems="center">
+        {/* Status */}
+
         {/* Date Range */}
         <Grid size={{ xs: 12, md: 4 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateRangePicker
               value={dateRange}
-              disableFuture
               onChange={(newValue) => onDateChange(newValue)}
               sx={{
                 width: "100%",
