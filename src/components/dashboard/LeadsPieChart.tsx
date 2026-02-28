@@ -8,7 +8,7 @@ interface Props {
   }[];
 }
 
-const COLORS = ["#5A6FF0", "#F6C358", "#FF5C6C", "#4EC9F5"];
+const COLORS = ["#5A6FF0", "#F6C358", "#FF5C6C", "#5BC0EB"];
 
 export default function LeadsPieChart({ data }: Props) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
@@ -37,57 +37,32 @@ export default function LeadsPieChart({ data }: Props) {
           alignItems="center"
           justifyContent="space-between"
           flexWrap="wrap"
-          gap={4}
         >
+          {/* 🔹 CENTER - Pie Chart */}
           <PieChart
-            height={280}
-            width={280}
+            height={260}
+            width={260}
             series={[
               {
                 data: formattedData,
                 innerRadius: 70,
                 outerRadius: 110,
-                paddingAngle: 3,
-                cornerRadius: 6,
+                paddingAngle: 1,
+                cornerRadius: 4,
               },
             ]}
-            slotProps={{
-              legend: {
-                hidden: true, // ✅ This removes default legend
-              },
-            }}
           />
-          {/* 🔥 Custom Legend */}
-          <Stack spacing={2}>
+
+          {/* 🔹 RIGHT SIDE - Percentages */}
+          <Stack spacing={1} alignItems="flex-end">
             {formattedData.map((item) => {
               const percentage =
                 total === 0 ? 0 : Math.round((item.value / total) * 100);
 
               return (
-                <Stack
-                  key={item.id}
-                  direction="row"
-                  alignItems="center"
-                  spacing={2}
-                >
-                  {/* Color Dot */}
-                  <Box
-                    sx={{
-                      width: 14,
-                      height: 14,
-                      borderRadius: "50%",
-                      backgroundColor: item.color,
-                    }}
-                  />
-
-                  {/* Label */}
-                  <Typography sx={{ minWidth: 80 }}>{item.label}</Typography>
-
-                  {/* Percentage */}
-                  <Typography fontWeight={600} color="primary.main">
-                    {percentage}%
-                  </Typography>
-                </Stack>
+                <Typography key={item.id} fontWeight={500} color="primary.main">
+                  {percentage}%
+                </Typography>
               );
             })}
           </Stack>
