@@ -6,42 +6,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
 } from "@mui/material";
 import type { UserBooking } from "../../types/user.types";
 import UsersTableSkeleton from "./UsersTableSkeleton";
+import InboxIcon from "@mui/icons-material/Inbox";
+import { Box, Typography } from "@mui/material";
 
 interface Props {
   data: UserBooking[];
   loading: boolean;
 }
 
-const getStatusColor = (status: UserBooking["booking_status"]) => {
-  switch (status) {
-    case "Confirmed":
-      return "#2e7d32";
-    case "Pending":
-      return "#ed6c02";
-    case "Cancelled":
-      return "#d32f2f";
-    case "Completed":
-      return "#0288d1";
-    default:
-      return "#D4AF37";
-  }
-};
-
 export default function UsersTable({ data, loading }: Props) {
-  const columns = [
-    "Name",
-    "Phone",
-    "Email",
-    "Service",
-    "Booking Date",
-    "Booking Time",
-    "Status",
-    "Created At",
-  ];
+  const columns = ["Name", "Phone", "Email", "Bookings Count", "Created At"];
 
   return (
     <TableContainer
@@ -71,6 +48,41 @@ export default function UsersTable({ data, loading }: Props) {
         <TableBody>
           {loading ? (
             <UsersTableSkeleton columns={columns.length} />
+          ) : data.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} align="center">
+                <Box
+                  sx={{
+                    py: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    color: "text.secondary",
+                  }}
+                >
+                  {/* Icon */}
+                  <InboxIcon
+                    sx={{
+                      fontSize: 48,
+                      color: "primary.main",
+                      opacity: 0.7,
+                    }}
+                  />
+
+                  {/* Title */}
+                  <Typography variant="h6" fontWeight={600}>
+                    No Users Found
+                  </Typography>
+
+                  {/* Subtitle */}
+                  <Typography variant="body2" color="text.disabled">
+                    There are no users to display right now.
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
           ) : (
             data.map((user) => (
               <TableRow
@@ -85,20 +97,7 @@ export default function UsersTable({ data, loading }: Props) {
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.phone}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.service}</TableCell>
-                <TableCell>{user.booking_date}</TableCell>
-                <TableCell>{user.booking_time}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={user.booking_status}
-                    size="small"
-                    sx={{
-                      backgroundColor: getStatusColor(user.booking_status),
-                      color: "#fff",
-                      fontWeight: 600,
-                    }}
-                  />
-                </TableCell>
+                <TableCell>{user.booking_count}</TableCell>
                 <TableCell>
                   {new Date(user.created_at).toLocaleDateString()}
                 </TableCell>

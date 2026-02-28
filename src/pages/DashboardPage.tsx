@@ -2,7 +2,7 @@ import { Box, Typography, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import DashboardKPI from "../components/dashboard/DashboardKPI";
 import LeadsPieChart from "../components/dashboard/LeadsPieChart";
-import BookingTrendChart from "../components/dashboard/BookingTrendChart";
+//import BookingTrendChart from "../components/dashboard/BookingTrendChart";
 import ServiceBarChart from "../components/dashboard/ServiceBarChart";
 import RecentBookingsTable from "../components/dashboard/RecentBookingsTable";
 import DashboardSkeleton from "../components/dashboard/DashboardSkeleton";
@@ -89,9 +89,9 @@ export default function DashboardPage() {
           <LeadsPieChart data={data.leadStatus} />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        {/* <Grid size={{ xs: 12, md: 6 }}>
           <BookingTrendChart data={data.bookingsTrend} />
-        </Grid>
+        </Grid> */}
 
         <Grid size={{ xs: 12, md: 6 }}>
           <ServiceBarChart data={data.services} />

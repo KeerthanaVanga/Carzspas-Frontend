@@ -82,7 +82,10 @@ We use high-quality vinyl wrap materials to ensure long-lasting results, providi
           Services
         </Typography>
 
-        <Button variant="contained" onClick={() => navigate("/services/new")}>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/services/create")}
+        >
           Add Service
         </Button>
       </Box>

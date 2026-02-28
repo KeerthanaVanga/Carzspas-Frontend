@@ -9,7 +9,6 @@ import { useMemo } from "react";
 export default function UsersPage() {
   const [users, setUsers] = useState<UserBooking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState("");
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
@@ -23,10 +22,7 @@ export default function UsersPage() {
           name: "Ravi Kumar",
           phone: "9876543210",
           email: "ravi@gmail.com",
-          service: "Exterior Detailing",
-          booking_date: "2026-03-01",
-          booking_time: "10:30 AM",
-          booking_status: "Confirmed",
+          booking_count: 3,
           created_at: new Date().toISOString(),
         },
         {
@@ -34,10 +30,7 @@ export default function UsersPage() {
           name: "Priya Sharma",
           phone: "9123456780",
           email: "priya@gmail.com",
-          service: "Interior Detailing",
-          booking_date: "2026-03-02",
-          booking_time: "12:00 PM",
-          booking_status: "Pending",
+          booking_count: 1,
           created_at: new Date().toISOString(),
         },
       ]);
@@ -48,18 +41,15 @@ export default function UsersPage() {
     return users.filter((user) => {
       const created = dayjs(user.created_at);
 
-      const matchesStatus =
-        statusFilter === "" || user.booking_status === statusFilter;
-
       const matchesDate =
         !dateRange[0] ||
         !dateRange[1] ||
         (created.isAfter(dateRange[0].startOf("day")) &&
           created.isBefore(dateRange[1].endOf("day")));
 
-      return matchesStatus && matchesDate;
+      return matchesDate;
     });
-  }, [users, statusFilter, dateRange]);
+  }, [users, dateRange]);
 
   return (
     <Box>
@@ -67,12 +57,7 @@ export default function UsersPage() {
         Users
       </Typography>
 
-      <UsersFilters
-        status={statusFilter}
-        dateRange={dateRange}
-        onStatusChange={setStatusFilter}
-        onDateChange={setDateRange}
-      />
+      <UsersFilters dateRange={dateRange} onDateChange={setDateRange} />
 
       <UsersTable data={filteredUsers} loading={loading} />
     </Box>

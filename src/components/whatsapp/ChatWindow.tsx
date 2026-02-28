@@ -11,6 +11,7 @@ import { useState } from "react";
 import MessageBubble from "./MessageBubble";
 import type { ChatUser, Message } from "../../types/whatsapp.types";
 import ChatWindowSkeleton from "./ChatWindowSkeleton";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 interface Props {
   user: ChatUser | null;
@@ -38,20 +39,43 @@ export default function ChatWindow({ user, onBack, loading = false }: Props) {
 
   if (!user) {
     return (
-      <Box flex={1} display="flex" alignItems="center" justifyContent="center">
-        <Typography color="primary.main">
-          Select a chat to start messaging
-        </Typography>
-      </Box>
-    );
-  }
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "background.default",
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          {/* WhatsApp Icon */}
+          <WhatsAppIcon
+            sx={{
+              fontSize: 60,
+              color: "primary.main",
+              opacity: 0.8,
+            }}
+          />
 
-  if (!user) {
-    return (
-      <Box flex={1} display="flex" alignItems="center" justifyContent="center">
-        <Typography color="primary.main">
-          Select a chat to start messaging
-        </Typography>
+          {/* Heading */}
+          <Typography variant="h5" fontWeight={700}>
+            WhatsApp Conversations
+          </Typography>
+
+          {/* Subtitle */}
+          <Typography variant="body2" color="text.secondary">
+            Select a chat from the sidebar to start messaging.
+          </Typography>
+        </Box>
       </Box>
     );
   }

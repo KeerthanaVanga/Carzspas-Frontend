@@ -15,6 +15,8 @@ import CampaignLeadsTableSkeleton from "./CampaignLeadsTableSkeleton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { useState } from "react";
+import InboxIcon from "@mui/icons-material/Inbox";
+import { Box, Typography } from "@mui/material";
 
 interface Props {
   data: CampaignLead[];
@@ -100,6 +102,41 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
         <TableBody>
           {loading ? (
             <CampaignLeadsTableSkeleton columns={columns.length} />
+          ) : data.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} align="center">
+                <Box
+                  sx={{
+                    py: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    color: "text.secondary",
+                  }}
+                >
+                  {/* Icon */}
+                  <InboxIcon
+                    sx={{
+                      fontSize: 48,
+                      color: "primary.main",
+                      opacity: 0.7,
+                    }}
+                  />
+
+                  {/* Title */}
+                  <Typography variant="h6" fontWeight={600}>
+                    No Campaign Leads Found
+                  </Typography>
+
+                  {/* Subtitle */}
+                  <Typography variant="body2" color="text.disabled">
+                    There are no leads to display right now.
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
           ) : (
             data.map((lead) => {
               const state = contactState[lead.id];
@@ -128,7 +165,7 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
                   </TableCell>
                   <TableCell>{lead.user_intent}</TableCell>
 
-                  {/* Status Column */}
+                  {/* Status */}
                   <TableCell>
                     <Chip
                       label={isContacted ? "Contacted" : lead.lead_status}
@@ -151,7 +188,7 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
                     {new Date(lead.created_at).toLocaleDateString()}
                   </TableCell>
 
-                  {/* Contact Column */}
+                  {/* Contact */}
                   <TableCell>
                     <IconButton
                       onClick={() => handleContactToggle(lead.id)}

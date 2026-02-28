@@ -21,6 +21,13 @@ interface Props {
 
 const shortcutsItems: PickersShortcutsItem<DateRange<Dayjs>>[] = [
   {
+    label: "Today",
+    getValue: () => {
+      const today = dayjs();
+      return [today.startOf("day"), today.endOf("day")];
+    },
+  },
+  {
     label: "This Week",
     getValue: () => {
       const today = dayjs();
@@ -33,13 +40,6 @@ const shortcutsItems: PickersShortcutsItem<DateRange<Dayjs>>[] = [
       const today = dayjs();
       const prevWeek = today.subtract(7, "day");
       return [prevWeek.startOf("week"), prevWeek.endOf("week")];
-    },
-  },
-  {
-    label: "Last 7 Days",
-    getValue: () => {
-      const today = dayjs();
-      return [today.subtract(7, "day"), today];
     },
   },
   {
@@ -103,7 +103,6 @@ export default function CampaignLeadsFilters({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateRangePicker
               value={dateRange}
-              disableFuture
               onChange={(newValue) => onChange("dateRange", newValue)}
               sx={{
                 width: "100%",

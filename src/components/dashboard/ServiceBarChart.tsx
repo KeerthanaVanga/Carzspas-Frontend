@@ -13,7 +13,7 @@ export default function ServiceBarChart({ data }: Props) {
     <Card sx={{ borderRadius: 3 }}>
       <CardContent>
         <Typography fontWeight={600} mb={2}>
-          Service Popularity
+          Campaigns
         </Typography>
 
         <BarChart

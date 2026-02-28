@@ -3,9 +3,6 @@ export interface UserBooking {
   name: string;
   phone: string;
   email: string;
-  service: string;
-  booking_date: string;
-  booking_time: string;
-  booking_status: "Confirmed" | "Pending" | "Cancelled" | "Completed";
+  booking_count: number;
   created_at: string;
 }

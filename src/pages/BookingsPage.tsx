@@ -33,6 +33,17 @@ export default function BookingsPage() {
           status: "Confirm",
           created_at: new Date().toISOString(),
         },
+        {
+          booking_id: 2,
+          user_name: "Ravi Kumar",
+          phone_number: "9876543210",
+          service_name: "Ceramic Coating",
+          branch_name: "Kukatpally",
+          date: "2026-02-27",
+          time: "10:30 AM",
+          status: "Completed",
+          created_at: new Date().toISOString(),
+        },
       ]);
       setLoading(false);
     }, 1500);

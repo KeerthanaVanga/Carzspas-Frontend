@@ -6,7 +6,7 @@ export interface Booking {
   branch_name: string;
   date: string;
   time: string;
-  status: "Confirm" | "Reschedule" | "Cancel";
+  status: "Confirm" | "Reschedule" | "Cancel" | "Completed";
   source?: string;
   created_at: string;
 }

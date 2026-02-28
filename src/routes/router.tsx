@@ -43,8 +43,18 @@ const router = createBrowserRouter([
           { path: ROUTES.USERS, element: <UsersPage /> },
           { path: ROUTES.CAMPAIGN_LEADS, element: <CampaignLeads /> },
           { path: ROUTES.BOOKINGS, element: <Bookings /> },
-          { path: ROUTES.SERVICES, element: <ServicesPage /> },
-          { path: ROUTES.SERVICESFORM, element: <ServicesFormPage /> },
+          {
+            path: ROUTES.SERVICES,
+            element: <ServicesPage />,
+          },
+          {
+            path: ROUTES.SERVICESEDIT,
+            element: <ServicesFormPage />,
+          },
+          {
+            path: ROUTES.SERVICECREATE,
+            element: <ServicesFormPage />,
+          },
 
           { path: ROUTES.CHATBOT, element: <WhatsappBot /> },
         ],
