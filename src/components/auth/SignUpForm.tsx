@@ -6,12 +6,15 @@ import LockIcon from "@mui/icons-material/Lock";
 import PersonIcon from "@mui/icons-material/Person";
 import AuthTextField from "./AuthTextField";
 import AuthLoadingButton from "./AuthLoadingButton";
+import { useSignup } from "../../hooks/useSignup";
 
 interface Props {
   onSwitch: () => void;
 }
 
 const SignUpForm = ({ onSwitch }: Props) => {
+  const { mutate, isPending } = useSignup();
+
   return (
     <Formik
       initialValues={{
@@ -33,10 +36,14 @@ const SignUpForm = ({ onSwitch }: Props) => {
           .required("Confirm your password"),
       })}
       onSubmit={(values) => {
-        console.log("Sign Up:", values);
+        mutate({
+          username: values.name,
+          email: values.email,
+          password: values.password,
+        });
       }}
     >
-      {({ isValid, dirty, isSubmitting }) => (
+      {({ isValid, dirty }) => (
         <Form>
           <Typography variant="h4" mb={2}>
             Create Account
@@ -67,8 +74,8 @@ const SignUpForm = ({ onSwitch }: Props) => {
           />
 
           <AuthLoadingButton
-            loading={isSubmitting}
-            disabled={!dirty || !isValid || isSubmitting}
+            loading={isPending}
+            disabled={!dirty || !isValid || isPending}
           >
             Sign Up
           </AuthLoadingButton>
