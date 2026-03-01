@@ -7,13 +7,27 @@ import PersonIcon from "@mui/icons-material/Person";
 import AuthTextField from "./AuthTextField";
 import AuthLoadingButton from "./AuthLoadingButton";
 import { useSignup } from "../../hooks/useSignup";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 interface Props {
   onSwitch: () => void;
 }
 
 const SignUpForm = ({ onSwitch }: Props) => {
-  const { mutate, isPending } = useSignup();
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const { mutateAsync, isPending } = useSignup({
+    onSuccess: (response) => {
+      console.log(response.message);
+      navigate("/", { replace: true });
+      enqueueSnackbar(response.message, { variant: "success" });
+    },
+    onError: (error) => {
+      console.log(error.message);
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
 
   return (
     <Formik
@@ -35,8 +49,8 @@ const SignUpForm = ({ onSwitch }: Props) => {
           .oneOf([Yup.ref("password")], "Passwords must match")
           .required("Confirm your password"),
       })}
-      onSubmit={(values) => {
-        mutate({
+      onSubmit={async (values) => {
+        await mutateAsync({
           username: values.name,
           email: values.email,
           password: values.password,

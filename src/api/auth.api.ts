@@ -17,7 +17,11 @@ export interface AuthResponse {
 }
 
 export const signup = async (payload: SignupPayload): Promise<AuthResponse> => {
-  const { data } = await api.post("/auth/register", payload);
+  const response = await api.post<AuthResponse>("/auth/register", payload);
 
-  return data;
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+
+  return response.data;
 };
