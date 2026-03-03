@@ -1,6 +1,6 @@
 import api from "./axios";
 import refreshClient from "./token-refresh";
-
+import { API_ROUTES } from "../routes/api.routes";
 let refreshPromise: Promise<boolean> | null = null;
 
 api.interceptors.response.use(
@@ -14,7 +14,7 @@ api.interceptors.response.use(
       try {
         if (!refreshPromise) {
           refreshPromise = refreshClient
-            .post("/auth/refresh")
+            .post(API_ROUTES.AUTH.REFRESH)
             .then(() => true)
             .catch(() => false);
         }

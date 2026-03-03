@@ -9,13 +9,16 @@ import {
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useLogout } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { queryClient } from "../../utils/TanStack";
 
 interface Props {
   anchorEl: HTMLElement | null;
   onClose: () => void;
   onProfileClick?: () => void;
   onSettingsClick?: () => void;
-  onLogoutClick?: () => void;
 }
 
 export default function ProfileMenu({
@@ -23,9 +26,24 @@ export default function ProfileMenu({
   onClose,
   onProfileClick,
   onSettingsClick,
-  onLogoutClick,
 }: Props) {
   const open = Boolean(anchorEl);
+
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const { mutateAsync } = useLogout({
+    onSuccess: (response) => {
+      queryClient.removeQueries({ queryKey: ["me"] });
+      queryClient.clear();
+      navigate("/auth", { replace: true });
+      console.log(response.message);
+      enqueueSnackbar(response.message, { variant: "success" });
+    },
+    onError: (error) => {
+      console.log(error.message);
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
 
   return (
     <Menu
@@ -68,9 +86,8 @@ export default function ProfileMenu({
       <Divider sx={{ borderColor: "#2A2A2A" }} />
 
       <MenuItem
-        onClick={() => {
-          onLogoutClick?.();
-          onClose();
+        onClick={async () => {
+          await mutateAsync();
         }}
       >
         <ListItemIcon>

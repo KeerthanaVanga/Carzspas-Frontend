@@ -14,9 +14,11 @@ import type { CampaignLead } from "../../types/campaign-leads-types";
 import CampaignLeadsTableSkeleton from "./CampaignLeadsTableSkeleton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PhoneIcon from "@mui/icons-material/Phone";
-import { useState } from "react";
 import InboxIcon from "@mui/icons-material/Inbox";
 import { Box, Typography } from "@mui/material";
+import dayjs from "dayjs";
+import { useUpdateLeadStatus } from "../../hooks/useCampaignLeads";
+import { useState } from "react";
 
 interface Props {
   data: CampaignLead[];
@@ -40,29 +42,24 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
     "Contact",
   ];
 
-  const [contactState, setContactState] = useState<
-    Record<number, { loading: boolean; contacted: boolean }>
-  >({});
+  const { mutate: updateStatus } = useUpdateLeadStatus();
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const handleContactToggle = (lead: CampaignLead) => {
+    const newStatus = lead.lead_status === "Contacted" ? "Cold" : "Contacted";
 
-  const handleContactToggle = (id: number) => {
-    const current = contactState[id];
+    setUpdatingId(lead.id);
 
-    // Start loading
-    setContactState((prev) => ({
-      ...prev,
-      [id]: { loading: true, contacted: current?.contacted ?? false },
-    }));
-
-    // Simulate API call
-    setTimeout(() => {
-      setContactState((prev) => ({
-        ...prev,
-        [id]: {
-          loading: false,
-          contacted: !current?.contacted,
+    updateStatus(
+      {
+        id: lead.id,
+        lead_status: newStatus,
+      },
+      {
+        onSettled: () => {
+          setUpdatingId(null);
         },
-      }));
-    }, 800);
+      },
+    );
   };
 
   const getStatusColor = (status?: string) => {
@@ -139,10 +136,6 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
             </TableRow>
           ) : (
             data.map((lead) => {
-              const state = contactState[lead.id];
-              const isLoading = state?.loading;
-              const isContacted = state?.contacted;
-
               return (
                 <TableRow
                   key={lead.id}
@@ -161,22 +154,22 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
                   <TableCell>{lead.car_model}</TableCell>
                   <TableCell>{lead.car_year}</TableCell>
                   <TableCell>
-                    {lead.preferred_date} | {lead.preferred_time}
+                    {lead.preferred_date && lead.preferred_time
+                      ? `${dayjs(lead.preferred_date).format("DD MMM YYYY")} | ${dayjs(
+                          lead.preferred_time,
+                        ).format("hh:mm A")}`
+                      : "-"}
                   </TableCell>
                   <TableCell>{lead.user_intent}</TableCell>
 
                   {/* Status */}
                   <TableCell>
                     <Chip
-                      label={isContacted ? "Contacted" : lead.lead_status}
+                      label={lead.lead_status}
                       size="small"
                       sx={{
-                        backgroundColor: getStatusColor(
-                          isContacted ? "Contacted" : lead.lead_status,
-                        ).bg,
-                        color: getStatusColor(
-                          isContacted ? "Contacted" : lead.lead_status,
-                        ).color,
+                        backgroundColor: getStatusColor(lead.lead_status).bg,
+                        color: getStatusColor(lead.lead_status).color,
                         fontWeight: 600,
                       }}
                     />
@@ -191,15 +184,18 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
                   {/* Contact */}
                   <TableCell>
                     <IconButton
-                      onClick={() => handleContactToggle(lead.id)}
-                      disabled={isLoading}
+                      onClick={() => handleContactToggle(lead)}
+                      disabled={updatingId === lead.id}
                       sx={{
-                        color: isContacted ? "#16A34A" : "primary.main",
+                        color:
+                          lead.lead_status === "Contacted"
+                            ? "#16A34A"
+                            : "primary.main",
                       }}
                     >
-                      {isLoading ? (
+                      {updatingId === lead.id ? (
                         <CircularProgress size={20} />
-                      ) : isContacted ? (
+                      ) : lead.lead_status === "Contacted" ? (
                         <CheckCircleIcon />
                       ) : (
                         <PhoneIcon />

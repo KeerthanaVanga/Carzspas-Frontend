@@ -5,12 +5,28 @@ import AuthTextField from "./AuthTextField";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import AuthLoadingButton from "./AuthLoadingButton";
+import { useSignin } from "../../hooks/useSignin";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 interface Props {
   onSwitch: () => void;
 }
 
 const SignInForm = ({ onSwitch }: Props) => {
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const { mutateAsync, isPending } = useSignin({
+    onSuccess: (response) => {
+      console.log(response.message);
+      navigate("/", { replace: true });
+      enqueueSnackbar(response.message, { variant: "success" });
+    },
+    onError: (error) => {
+      console.log(error.message);
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
@@ -22,15 +38,11 @@ const SignInForm = ({ onSwitch }: Props) => {
           .min(6, "Minimum 6 characters")
           .required("Password is required"),
       })}
-      onSubmit={async (values, { setSubmitting }) => {
-        try {
-          console.log("Sign In:", values);
-
-          // simulate API
-          await new Promise((res) => setTimeout(res, 1500));
-        } finally {
-          setSubmitting(false);
-        }
+      onSubmit={async (values) => {
+        await mutateAsync({
+          email: values.email,
+          password: values.password,
+        });
       }}
     >
       {({ isValid, dirty, isSubmitting }) => (
@@ -54,7 +66,7 @@ const SignInForm = ({ onSwitch }: Props) => {
           />
 
           <AuthLoadingButton
-            loading={isSubmitting}
+            loading={isPending || isSubmitting}
             disabled={!dirty || !isValid || isSubmitting}
           >
             Sign In

@@ -1,104 +1,32 @@
-import { Box, Typography } from "@mui/material";
-import { useEffect, useState, useMemo } from "react";
+import { Box, Typography, TablePagination } from "@mui/material";
+import { useState } from "react";
+import { Dayjs } from "dayjs";
 import CampaignLeadsTable from "../components/campaign-leads/CampaignLeadsTable";
 import CampaignLeadsFilters from "../components/campaign-leads/CampaignLeadsFilters";
-import type { CampaignLead } from "../types/campaign-leads-types";
-import dayjs, { Dayjs } from "dayjs";
+import { useCampaignLeads, useCampaignNames } from "../hooks/useCampaignLeads";
 
 export default function CampaignLeadsPage() {
-  const [leads, setLeads] = useState<CampaignLead[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState<number>(0); // MUI 0-based
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
-  const [campaign, setCampaign] = useState("");
-  const [status, setStatus] = useState("");
-  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState({
+    campaign: "",
+    status: "",
+    search: "",
+    dateRange: [null, null] as [Dayjs | null, Dayjs | null],
+  });
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLeads([
-        {
-          id: 1,
-          campaign_name: "Ceramic Offer",
-          name: "Ravi Kumar",
-          phone_number: "9876543210",
-          car_type: "SUV",
-          car_brand: "Hyundai",
-          car_model: "Creta",
-          car_year: 2023,
-          preferred_date: "2026-02-27",
-          preferred_time: "10:30 AM",
-          user_intent: "Ceramic Coating",
-          lead_status: "Cold",
-          notes: "Interested this weekend",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        {
-          id: 2,
-          campaign_name: "Ceramic Offer",
-          name: "Ravi Kumar",
-          phone_number: "9876543210",
-          car_type: "SUV",
-          car_brand: "Hyundai",
-          car_model: "Creta",
-          car_year: 2023,
-          preferred_date: "2026-02-27",
-          preferred_time: "10:30 AM",
-          user_intent: "Ceramic Coating",
-          lead_status: "Warm",
-          notes: "Interested this weekend",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        {
-          id: 3,
-          campaign_name: "Ceramic Offer",
-          name: "Ravi Kumar",
-          phone_number: "9876543210",
-          car_type: "SUV",
-          car_brand: "Hyundai",
-          car_model: "Creta",
-          car_year: 2023,
-          preferred_date: "2026-02-27",
-          preferred_time: "10:30 AM",
-          user_intent: "Ceramic Coating",
-          lead_status: "Contacted",
-          notes: "Interested this weekend",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ]);
-      setLoading(false);
-    }, 1200);
-  }, []);
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    null,
-    null,
-  ]);
-  const filteredLeads = useMemo(() => {
-    return leads.filter((lead) => {
-      const created = dayjs(lead.created_at);
+  const { data: campaigns = [] } = useCampaignNames();
 
-      const matchesCampaign =
-        campaign === "" || lead.campaign_name === campaign;
-
-      const matchesStatus = status === "" || lead.lead_status === status;
-
-      const matchesSearch =
-        lead.name.toLowerCase().includes(search.toLowerCase()) ||
-        lead.phone_number.includes(search);
-
-      const matchesDate =
-        !dateRange[0] ||
-        !dateRange[1] ||
-        (created.isAfter(dateRange[0].startOf("day")) &&
-          created.isBefore(dateRange[1].endOf("day")));
-
-      return matchesCampaign && matchesStatus && matchesSearch && matchesDate;
-    });
-  }, [leads, campaign, status, search, dateRange]);
-
-  const campaignsList = [...new Set(leads.map((l) => l.campaign_name))];
+  const { data, isLoading } = useCampaignLeads({
+    page: page + 1,
+    limit: rowsPerPage,
+    campaign_name: filters.campaign || undefined,
+    lead_status: filters.status || undefined,
+    search: filters.search || undefined,
+    fromDate: filters.dateRange[0]?.startOf("day").toISOString(),
+    toDate: filters.dateRange[1]?.endOf("day").toISOString(),
+  });
 
   return (
     <Box>
@@ -107,31 +35,42 @@ export default function CampaignLeadsPage() {
       </Typography>
 
       <CampaignLeadsFilters
-        campaign={campaign}
-        status={status}
-        search={search}
-        dateRange={dateRange}
-        campaigns={campaignsList}
+        campaign={filters.campaign}
+        status={filters.status}
+        search={filters.search}
+        dateRange={filters.dateRange}
+        campaigns={campaigns}
         onChange={(field, value) => {
-          if (field === "campaign" && typeof value === "string") {
-            setCampaign(value);
-          }
+          setPage(0);
 
-          if (field === "status" && typeof value === "string") {
-            setStatus(value);
-          }
+          if (field === "campaign" && typeof value === "string")
+            setFilters((prev) => ({ ...prev, campaign: value }));
 
-          if (field === "search" && typeof value === "string") {
-            setSearch(value);
-          }
+          if (field === "status" && typeof value === "string")
+            setFilters((prev) => ({ ...prev, status: value }));
 
-          if (field === "dateRange" && Array.isArray(value)) {
-            setDateRange(value);
-          }
+          if (field === "search" && typeof value === "string")
+            setFilters((prev) => ({ ...prev, search: value }));
+
+          if (field === "dateRange" && Array.isArray(value))
+            setFilters((prev) => ({ ...prev, dateRange: value }));
         }}
       />
 
-      <CampaignLeadsTable data={filteredLeads} loading={loading} />
+      <CampaignLeadsTable data={data?.data ?? []} loading={isLoading} />
+
+      <TablePagination
+        component="div"
+        count={data?.meta.total ?? 0}
+        page={page}
+        onPageChange={(_, newPage: number) => setPage(newPage)}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+        rowsPerPageOptions={[10, 25, 50]}
+      />
     </Box>
   );
 }

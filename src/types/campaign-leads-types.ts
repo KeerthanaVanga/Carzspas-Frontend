@@ -11,7 +11,7 @@ export interface CampaignLead {
   preferred_time?: string;
   user_intent?: string;
   lead_status?: string;
-  notes?: string;
+  notes?: string; // ✅ FIX HERE
   created_at: string;
   updated_at: string;
 }

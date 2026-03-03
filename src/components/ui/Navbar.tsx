@@ -83,7 +83,6 @@ export default function Navbar({ open, toggleDrawer }: Props) {
           onClose={() => setAnchorEl(null)}
           onProfileClick={() => console.log("Profile")}
           onSettingsClick={() => console.log("Settings")}
-          onLogoutClick={() => console.log("Logout")}
         />
       </Toolbar>
     </AppBar>
