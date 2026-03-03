@@ -1,12 +1,33 @@
-export interface Booking {
+export interface BookingItem {
   booking_id: number;
-  user_name: string;
-  phone_number: string;
-  service_name: string;
-  branch_name: string;
   date: string;
   time: string;
-  status: "Confirm" | "Reschedule" | "Cancel" | "Completed";
-  source?: string;
+  status: string;
   created_at: string;
+
+  users: {
+    name: string;
+    phone: string; // ✅ correct
+  };
+
+  services: {
+    id: number;
+    name: string; // ✅ correct
+  } | null;
+
+  branches: {
+    id: number;
+    name: string; // ✅ correct
+  } | null;
+}
+
+export interface BookingsResponse {
+  success: boolean;
+  message: string;
+  data: BookingItem[];
+  meta: {
+    total: number;
+    page: number;
+    totalPages: number;
+  };
 }

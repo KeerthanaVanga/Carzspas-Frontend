@@ -7,19 +7,23 @@ import {
   TableHead,
   TableRow,
   Chip,
+  Box,
+  Typography,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
-import type { Booking } from "./../../types/booking.types";
-import BookingsTableSkeleton from "./BookingTableSkeleton";
+
 import InboxIcon from "@mui/icons-material/Inbox";
-import { Box, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ReplayIcon from "@mui/icons-material/Replay";
-import IconButton from "@mui/material/IconButton";
-import CircularProgress from "@mui/material/CircularProgress";
+
 import { useState } from "react";
+import type { BookingItem } from "../../types/booking.types";
+import BookingsTableSkeleton from "./BookingTableSkeleton";
+import { useUpdateBookingStatus } from "../../hooks/useBookings";
 
 interface Props {
-  data: Booking[];
+  data: BookingItem[];
   loading: boolean;
 }
 
@@ -51,42 +55,25 @@ export default function BookingsTable({ data, loading }: Props) {
     "Action",
   ];
 
-  // 🔥 Store per-row state
-  const [statusState, setStatusState] = useState<
-    Record<
-      number,
-      {
-        loading: boolean;
-        originalStatus: string;
-        completed: boolean;
-      }
-    >
-  >({});
+  const { mutateAsync } = useUpdateBookingStatus();
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
-  const handleToggleStatus = (booking: Booking) => {
-    const current = statusState[booking.booking_id];
+  const handleToggleStatus = async (booking: BookingItem) => {
+    try {
+      setLoadingId(booking.booking_id);
 
-    // Start loading
-    setStatusState((prev) => ({
-      ...prev,
-      [booking.booking_id]: {
-        loading: true,
-        originalStatus: current?.originalStatus ?? booking.status,
-        completed: current?.completed ?? false,
-      },
-    }));
+      const newStatus =
+        booking.status === "Completed" ? "Confirm" : "Completed";
 
-    // Simulate API call
-    setTimeout(() => {
-      setStatusState((prev) => ({
-        ...prev,
-        [booking.booking_id]: {
-          loading: false,
-          originalStatus: current?.originalStatus ?? booking.status,
-          completed: !current?.completed,
-        },
-      }));
-    }, 800);
+      await mutateAsync({
+        bookingId: booking.booking_id,
+        status: newStatus,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingId(null);
+    }
   };
 
   return (
@@ -139,11 +126,7 @@ export default function BookingsTable({ data, loading }: Props) {
             </TableRow>
           ) : (
             data.map((booking) => {
-              const state = statusState[booking.booking_id];
-              const isLoading = state?.loading;
-              const isCompleted = state?.completed;
-
-              const displayStatus = isCompleted ? "Completed" : booking.status;
+              const isRowLoading = loadingId === booking.booking_id;
 
               return (
                 <TableRow
@@ -155,21 +138,32 @@ export default function BookingsTable({ data, loading }: Props) {
                     },
                   }}
                 >
-                  <TableCell>{booking.user_name}</TableCell>
-                  <TableCell>{booking.phone_number}</TableCell>
-                  <TableCell>{booking.service_name}</TableCell>
-                  <TableCell>{booking.branch_name}</TableCell>
-                  <TableCell>{booking.date}</TableCell>
-                  <TableCell>{booking.time}</TableCell>
+                  <TableCell>{booking.users.name}</TableCell>
 
-                  {/* Status */}
+                  <TableCell>{booking.users.phone}</TableCell>
+
+                  <TableCell>{booking.services?.name ?? "-"}</TableCell>
+
+                  <TableCell>{booking.branches?.name ?? "-"}</TableCell>
+
+                  <TableCell>
+                    {new Date(booking.date).toLocaleDateString()}
+                  </TableCell>
+
+                  <TableCell>
+                    {new Date(booking.time).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </TableCell>
+
                   <TableCell>
                     <Chip
-                      label={displayStatus}
+                      label={booking.status}
                       size="small"
                       sx={{
-                        backgroundColor: getStatusColor(displayStatus).bg,
-                        color: getStatusColor(displayStatus).color,
+                        backgroundColor: getStatusColor(booking.status).bg,
+                        color: getStatusColor(booking.status).color,
                         fontWeight: 600,
                       }}
                     />
@@ -179,18 +173,14 @@ export default function BookingsTable({ data, loading }: Props) {
                     {new Date(booking.created_at).toLocaleDateString()}
                   </TableCell>
 
-                  {/* 🔥 Action Column */}
                   <TableCell>
                     <IconButton
                       onClick={() => handleToggleStatus(booking)}
-                      disabled={isLoading}
-                      sx={{
-                        color: isCompleted ? "#F59E0B" : "primary.main",
-                      }}
+                      disabled={isRowLoading}
                     >
-                      {isLoading ? (
+                      {isRowLoading ? (
                         <CircularProgress size={20} />
-                      ) : isCompleted ? (
+                      ) : booking.status === "Completed" ? (
                         <ReplayIcon />
                       ) : (
                         <CheckCircleIcon />

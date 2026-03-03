@@ -2,7 +2,7 @@ import { Box, Typography, TablePagination } from "@mui/material";
 import { useState, useMemo } from "react";
 import { Dayjs } from "dayjs";
 import UsersTable from "../components/users/UsersTable";
-import UsersFilters from "../components/users/Usersfilters";
+import UsersFilters from "../components/users/UsersFilters";
 import { useUsers } from "../hooks/useUsers";
 import type { UserBooking } from "../types/user.types";
 import type { BackendUser } from "../api/users.api";

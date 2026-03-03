@@ -14,6 +14,7 @@ interface Props {
   search: string;
   dateRange: [Dayjs | null, Dayjs | null];
   onChange: (field: FilterField, value: FilterValue) => void;
+  bookingStatuses: string[];
 }
 
 const shortcutsItems: PickersShortcutsItem<DateRange<Dayjs>>[] = [
@@ -50,6 +51,7 @@ const shortcutsItems: PickersShortcutsItem<DateRange<Dayjs>>[] = [
 ];
 
 export default function BookingsFilters({
+  bookingStatuses,
   status,
   search,
   dateRange,
@@ -68,10 +70,11 @@ export default function BookingsFilters({
             onChange={(e) => onChange("status", e.target.value)}
           >
             <MenuItem value="">All</MenuItem>
-            <MenuItem value="Confirm">Confirm</MenuItem>
-            <MenuItem value="Reschedule">Reschedule</MenuItem>
-            <MenuItem value="Cancel">Cancel</MenuItem>
-            <MenuItem value="Completed">Completed</MenuItem>
+            {bookingStatuses.map((b) => (
+              <MenuItem key={b} value={b}>
+                {b}
+              </MenuItem>
+            ))}
           </TextField>
         </Grid>
 

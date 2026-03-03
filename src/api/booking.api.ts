@@ -1,32 +1,47 @@
 import api from "../lib/axios-interceptor";
+import type { BookingsResponse } from "../types/booking.types";
 
-export interface BookingData {
-  booking_id: number;
-  user_id: number;
-  service_id: number | null;
-  branch_id: number | null;
-  date: string; // YYYY-MM-DD
-  time: string; // HH:mm:ss
-  status: string;
-  source: string | null;
-  carmodel: string | null;
-  created_at: string | null; // ISO timestamp
-  updated_at: string | null; // ISO timestamp
+export interface GetBookingsParams {
+  page: number;
+  limit: number;
+  status?: string;
+  search?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
-export interface Booking {
+export interface GetBookingStatusParams {
   success: boolean;
-  message: string;
-  data: BookingData[];
-  meta: {
-    total: number;
-    page: number;
-    totalPages: number;
-  };
+  data: string[];
 }
 
-export const getBookings = async (params: string) => {
-  const response = await api.get<Booking>("/bookings", { params });
+export const getBookings = async (
+  params: GetBookingsParams,
+): Promise<BookingsResponse> => {
+  const response = await api.get<BookingsResponse>("/bookings", { params });
+
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+
+  return response.data;
+};
+
+export const getBookingStatus = async (): Promise<string[]> => {
+  const response = await api.get("/bookings/booking-statuses");
+
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+
+  return response.data.data;
+};
+
+export const updateBookingStatus = async (
+  bookingId: number,
+  status: string,
+) => {
+  const response = await api.patch(`/bookings/${bookingId}/status`, { status });
 
   if (!response.data.success) {
     throw new Error(response.data.message);

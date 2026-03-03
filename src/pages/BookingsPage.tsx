@@ -1,14 +1,13 @@
-import { Box, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { Box, Typography, TablePagination } from "@mui/material";
+import { useState } from "react";
+import { Dayjs } from "dayjs";
 import BookingsTable from "../components/bookings/BookingsTable";
 import BookingsFilters from "../components/bookings/BookingFilters";
-import type { Booking } from "../types/booking.types";
-import dayjs, { Dayjs } from "dayjs";
-import { useMemo } from "react";
+import { useBookings, useBookingStatus } from "../hooks/useBookings";
 
 export default function BookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [filters, setFilters] = useState<{
     status: string;
     search: string;
@@ -19,57 +18,16 @@ export default function BookingsPage() {
     dateRange: [null, null],
   });
 
-  useEffect(() => {
-    setTimeout(() => {
-      setBookings([
-        {
-          booking_id: 1,
-          user_name: "Ravi Kumar",
-          phone_number: "9876543210",
-          service_name: "Ceramic Coating",
-          branch_name: "Kukatpally",
-          date: "2026-02-27",
-          time: "10:30 AM",
-          status: "Confirm",
-          created_at: new Date().toISOString(),
-        },
-        {
-          booking_id: 2,
-          user_name: "Ravi Kumar",
-          phone_number: "9876543210",
-          service_name: "Ceramic Coating",
-          branch_name: "Kukatpally",
-          date: "2026-02-27",
-          time: "10:30 AM",
-          status: "Completed",
-          created_at: new Date().toISOString(),
-        },
-      ]);
-      setLoading(false);
-    }, 1500);
-  }, []);
+  const { data: bookingStatuses = [] } = useBookingStatus();
 
-  const filteredBookings = useMemo(() => {
-    return bookings.filter((b) => {
-      const created = dayjs(b.created_at);
-
-      const matchesStatus =
-        filters.status === "" || b.status === filters.status;
-
-      const matchesSearch =
-        filters.search === "" ||
-        b.user_name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        b.phone_number.includes(filters.search);
-
-      const matchesDate =
-        !filters.dateRange[0] ||
-        !filters.dateRange[1] ||
-        (created.isAfter(filters.dateRange[0].startOf("day")) &&
-          created.isBefore(filters.dateRange[1].endOf("day")));
-
-      return matchesStatus && matchesSearch && matchesDate;
-    });
-  }, [bookings, filters]);
+  const { data, isLoading } = useBookings({
+    page,
+    limit,
+    status: filters.status || undefined,
+    search: filters.search || undefined,
+    startDate: filters.dateRange[0]?.toISOString(),
+    endDate: filters.dateRange[1]?.toISOString(),
+  });
 
   return (
     <Box>
@@ -78,6 +36,7 @@ export default function BookingsPage() {
       </Typography>
 
       <BookingsFilters
+        bookingStatuses={bookingStatuses}
         status={filters.status}
         search={filters.search}
         dateRange={filters.dateRange}
@@ -86,7 +45,25 @@ export default function BookingsPage() {
         }
       />
 
-      <BookingsTable data={filteredBookings} loading={loading} />
+      <BookingsTable data={data?.data ?? []} loading={isLoading} />
+
+      {data && (
+        <TablePagination
+          component="div"
+          count={data.meta.total}
+          page={page - 1}
+          rowsPerPage={limit}
+          onPageChange={(_, newPage) => {
+            setPage(newPage + 1);
+          }}
+          onRowsPerPageChange={(event) => {
+            const newLimit = parseInt(event.target.value, 10);
+            setLimit(newLimit);
+            setPage(1); // reset to first page
+          }}
+          rowsPerPageOptions={[10, 20, 50]}
+        />
+      )}
     </Box>
   );
 }
