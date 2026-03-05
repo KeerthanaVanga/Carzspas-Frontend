@@ -52,7 +52,7 @@ export default function UsersPage() {
 
       <UsersFilters
         dateRange={dateRange}
-        onDateChange={(range) => {
+        onDateChange={(range: [Dayjs | null, Dayjs | null]) => {
           setPage(0); // reset page
           setDateRange(range);
         }}
