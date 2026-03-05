@@ -7,29 +7,30 @@ import {
   useTheme,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ChatSidebar from "./ChatSidebar";
 import ChatWindow from "./ChatWindow";
 import type { ChatUser } from "../../types/whatsapp.types";
+import { useWhatsappUsers } from "../../hooks/useWhatsapp";
 
 export default function ChatLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
+  const { data } = useWhatsappUsers();
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleDownloadLeads = () => {
     console.log("Download leads clicked");
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        height: "100%",
+        pb: 0,
+        mb: 0,
+      }}
+    >
       {/* PAGE HEADER */}
       <Box
         mb={3}
@@ -62,7 +63,7 @@ export default function ChatLayout() {
               Today Leads
             </Typography>
             <Typography fontWeight={700} color="primary.main">
-              12
+              {data?.todayUsers ?? 0}
             </Typography>
           </Box>
 
@@ -80,7 +81,7 @@ export default function ChatLayout() {
               Total Leads
             </Typography>
             <Typography fontWeight={700} color="primary.main">
-              248
+              {data?.count ?? 0}
             </Typography>
           </Box>
 
@@ -111,7 +112,6 @@ export default function ChatLayout() {
           <ChatSidebar
             selectedUser={selectedUser}
             onSelectUser={setSelectedUser}
-            loading={loading}
           />
         )}
 
@@ -119,7 +119,6 @@ export default function ChatLayout() {
           <ChatWindow
             user={selectedUser}
             onBack={() => setSelectedUser(null)}
-            loading={loading}
           />
         )}
       </Box>

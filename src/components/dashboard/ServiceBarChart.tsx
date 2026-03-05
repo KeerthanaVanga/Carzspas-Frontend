@@ -3,7 +3,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 
 interface Props {
   data: {
-    service: string;
+    campaigns_name: string;
     value: number;
   }[];
 }
@@ -20,7 +20,7 @@ export default function ServiceBarChart({ data }: Props) {
           xAxis={[
             {
               scaleType: "band",
-              data: data.map((d: Props["data"][0]) => d.service),
+              data: data.map((d: Props["data"][0]) => d.campaigns_name),
             },
           ]}
           series={[

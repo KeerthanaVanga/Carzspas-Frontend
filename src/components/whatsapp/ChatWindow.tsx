@@ -7,36 +7,33 @@ import {
   Stack,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import MessageBubble from "./MessageBubble";
-import type { ChatUser, Message } from "../../types/whatsapp.types";
+import type { ChatUser } from "../../types/whatsapp.types";
 import ChatWindowSkeleton from "./ChatWindowSkeleton";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import { useUserMessages } from "../../hooks/useWhatsapp";
 
 interface Props {
   user: ChatUser | null;
   onBack?: () => void;
-  loading?: boolean;
 }
 
-export default function ChatWindow({ user, onBack, loading = false }: Props) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      sender: "user",
-      text: "Hi, I want PPF service.",
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      sender: "admin",
-      text: "Sure sir, which car model?",
-      created_at: new Date().toISOString(),
-    },
-  ]);
-
+export default function ChatWindow({ user, onBack }: Props) {
+  const { data, isLoading } = useUserMessages(user?.phoneNumber);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [input, setInput] = useState("");
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [data]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "auto",
+    });
+  }, [user]);
   if (!user) {
     return (
       <Box
@@ -79,21 +76,11 @@ export default function ChatWindow({ user, onBack, loading = false }: Props) {
       </Box>
     );
   }
-  if (loading && user) {
+  if (isLoading && user) {
     return <ChatWindowSkeleton />;
   }
   const sendMessage = () => {
     if (!input.trim()) return;
-
-    setMessages([
-      ...messages,
-      {
-        id: Date.now(),
-        sender: "admin",
-        text: input,
-        created_at: new Date().toISOString(),
-      },
-    ]);
 
     setInput("");
   };
@@ -122,10 +109,42 @@ export default function ChatWindow({ user, onBack, loading = false }: Props) {
       </Stack>
 
       {/* Messages */}
-      <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
-        {messages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} />
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: "auto",
+          p: 2,
+
+          "&::-webkit-scrollbar": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "transparent",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(212,175,55,0.6)",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "rgba(212,175,55,0.9)",
+          },
+        }}
+      >
+        {data?.data.map((msg) => (
+          <MessageBubble
+            key={msg.id}
+            message={{
+              id: msg.id,
+              senderType: msg.senderType === "ai" ? "ai" : "user",
+              message: msg.message,
+              createdAt: msg.createdAt,
+              messageType: msg.messageType,
+              status: msg.status,
+              whatsappMessageId: msg.whatsappMessageId,
+            }}
+          />
         ))}
+        <div ref={messagesEndRef} />
       </Box>
 
       {/* Input */}
