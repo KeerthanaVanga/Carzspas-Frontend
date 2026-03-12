@@ -19,6 +19,7 @@ import { Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useUpdateLeadStatus } from "../../hooks/useCampaignLeads";
 import { useState } from "react";
+import { useSnackbar } from "notistack";
 
 interface Props {
   data: CampaignLead[];
@@ -44,6 +45,7 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
 
   const { mutate: updateStatus } = useUpdateLeadStatus();
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
   const handleContactToggle = (lead: CampaignLead) => {
     const newStatus = lead.lead_status === "Contacted" ? "Cold" : "Contacted";
 
@@ -55,6 +57,16 @@ export default function CampaignLeadsTable({ data, loading }: Props) {
         lead_status: newStatus,
       },
       {
+        onSuccess: () => {
+          enqueueSnackbar(`Lead status updated to ${newStatus}`, {
+            variant: "success",
+          });
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to update lead status", {
+            variant: "error",
+          });
+        },
         onSettled: () => {
           setUpdatingId(null);
         },

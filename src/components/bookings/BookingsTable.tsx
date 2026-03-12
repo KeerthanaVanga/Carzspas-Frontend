@@ -12,7 +12,7 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-
+import { useSnackbar } from "notistack";
 import InboxIcon from "@mui/icons-material/Inbox";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ReplayIcon from "@mui/icons-material/Replay";
@@ -57,6 +57,7 @@ export default function BookingsTable({ data, loading }: Props) {
 
   const { mutateAsync } = useUpdateBookingStatus();
   const [loadingId, setLoadingId] = useState<number | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleToggleStatus = async (booking: BookingItem) => {
     try {
@@ -69,8 +70,13 @@ export default function BookingsTable({ data, loading }: Props) {
         bookingId: booking.booking_id,
         status: newStatus,
       });
+
+      enqueueSnackbar(`Booking status updated to ${newStatus}`, {
+        variant: "success",
+      });
     } catch (error) {
       console.error(error);
+      enqueueSnackbar("Failed to update booking status", { variant: "error" });
     } finally {
       setLoadingId(null);
     }
