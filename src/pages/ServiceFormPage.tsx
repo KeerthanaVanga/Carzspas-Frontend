@@ -34,7 +34,7 @@ export default function ServiceFormPage() {
         });
       } else {
         await createService({
-          name: values.name,
+          service_name: values.name,
           description: values.description,
           url: values.url,
           images: values.image ? [values.image] : [],
