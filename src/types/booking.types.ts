@@ -6,18 +6,18 @@ export interface BookingItem {
   created_at: string;
 
   users: {
-    name: string;
+    user_name: string;
     phone: string; // ✅ correct
   };
 
   services: {
     id: number;
-    name: string; // ✅ correct
+    service_name: string; // ✅ correct
   } | null;
 
   branches: {
     id: number;
-    name: string; // ✅ correct
+    branch_name: string; // ✅ correct
   } | null;
 }
 

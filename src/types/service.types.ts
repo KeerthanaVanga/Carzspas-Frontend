@@ -1,6 +1,6 @@
 export interface Service {
   id: number;
-  name: string;
+  service_name: string;
   url?: string;
   images: string[];
   description?: string;

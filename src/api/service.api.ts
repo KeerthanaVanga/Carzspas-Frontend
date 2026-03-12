@@ -12,7 +12,7 @@ export const getServices = async (): Promise<Service[]> => {
 };
 
 export const createService = async (data: {
-  name: string;
+  service_name: string;
   url?: string;
   images: string[];
   description?: string;
@@ -28,7 +28,7 @@ export const createService = async (data: {
 export const updateService = async (
   id: number,
   data: {
-    name?: string;
+    service_name?: string;
     url?: string;
     images?: string[];
     description?: string;

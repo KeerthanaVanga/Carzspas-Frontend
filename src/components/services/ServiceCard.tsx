@@ -34,7 +34,7 @@ export default function ServiceCard({ service }: Props) {
         component="img"
         height="200"
         image={service.images?.[0]}
-        alt={service.name}
+        alt={service.service_name}
       />
 
       <CardContent sx={{ flexGrow: 1 }}>
@@ -44,7 +44,7 @@ export default function ServiceCard({ service }: Props) {
           color="primary.main"
           gutterBottom
         >
-          {service.name}
+          {service.service_name}
         </Typography>
 
         <Typography variant="body2" color="text.secondary">

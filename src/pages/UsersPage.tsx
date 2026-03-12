@@ -35,7 +35,7 @@ export default function UsersPage() {
     return data.data.map(
       (user: BackendUser): UserBooking => ({
         id: user.id,
-        name: user.name,
+        name: user.user_name,
         phone: user.phone,
         email: user.email,
         booking_count: user._count.bookings,

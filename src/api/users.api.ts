@@ -5,7 +5,7 @@ import api from "../lib/axios-interceptor";
 ------------------------------ */
 export interface BackendUser {
   id: number;
-  name: string;
+  user_name: string;
   phone: string;
   email: string;
   created_at: string;

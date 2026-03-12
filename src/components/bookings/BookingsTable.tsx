@@ -138,13 +138,13 @@ export default function BookingsTable({ data, loading }: Props) {
                     },
                   }}
                 >
-                  <TableCell>{booking.users.name}</TableCell>
+                  <TableCell>{booking.users.user_name}</TableCell>
 
                   <TableCell>{booking.users.phone}</TableCell>
 
-                  <TableCell>{booking.services?.name ?? "-"}</TableCell>
+                  <TableCell>{booking.services?.service_name ?? "-"}</TableCell>
 
-                  <TableCell>{booking.branches?.name ?? "-"}</TableCell>
+                  <TableCell>{booking.branches?.branch_name ?? "-"}</TableCell>
 
                   <TableCell>
                     {new Date(booking.date).toLocaleDateString()}
